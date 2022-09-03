@@ -26,7 +26,7 @@ public class MainServlet extends HttpServlet {
       var path = req.getRequestURI();
       long id = 0;
       final var method = req.getMethod();
-      if (path.matches("/api/posts/*\\d*")) {
+      if (path.matches("/api/posts/?\\d*")) {
         if (path.matches("/api/posts/\\d+")) {
           id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
         }
