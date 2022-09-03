@@ -34,7 +34,7 @@ public class MainServlet extends HttpServlet {
           case GET -> controller.get(id, resp);
           case POST -> controller.save(req.getReader(), resp);
           case DELETE -> controller.removeById(id, resp);
-          default -> resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+          default -> resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
         return;
       }
