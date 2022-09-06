@@ -2,8 +2,7 @@ package org.example.servlet;
 
 import org.example.constants.Method;
 import org.example.controller.PostController;
-import org.example.repository.PostRepository;
-import org.example.service.PostService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +14,7 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void init() {
-    final var repository = new PostRepository();
-    final var service = new PostService(repository);
-    controller = new PostController(service);
+    controller = new AnnotationConfigApplicationContext("org.example").getBean(PostController.class);
   }
 
   @Override
@@ -26,7 +23,7 @@ public class MainServlet extends HttpServlet {
       var path = req.getRequestURI();
       long id = 0;
       final var method = req.getMethod();
-      if (path.matches("/api/posts/*\\d*")) {
+      if (path.matches("/api/posts/?\\d*")) {
         if (path.matches("/api/posts/\\d+")) {
           id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
         }
@@ -34,7 +31,7 @@ public class MainServlet extends HttpServlet {
           case GET -> controller.get(id, resp);
           case POST -> controller.save(req.getReader(), resp);
           case DELETE -> controller.removeById(id, resp);
-          default -> resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+          default -> resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
         return;
       }
